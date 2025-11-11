@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="history-container">
+    <div class="history-header">
+        <h2>My Adoption History</h2>
+        <p class="subtitle">Your journey of giving pets their forever homes</p>
+    </div>
+
+    <div class="history-timeline">
+        {% for h in history %}
+        <div class="history-card">
+            <div class="timeline-dot"></div>
+            <div class="history-content">
+                <h3 class="pet-name">{{ h.PetName }}</h3>
+                <div class="history-details">
+                    <div class="detail-item">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span>Owner: {{ h.OwnerName }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <span>{{ h.Date }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                        <span>Payment: {{ h.PaymentMode or 'N/A' }} {{ h.Amount or '' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-history">
+            <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <p>No adoption history yet</p>
+            <a href="{{ url_for('index') }}" class="browse-pets-btn">Browse Available Pets</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .history-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .history-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        border-radius: 15px;
+        color: white;
+    }
+
+    .history-header h2 {
+        font-size: 2.2em;
+        margin: 0;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .subtitle {
+        font-size: 1.1em;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .history-timeline {
+        position: relative;
+        padding: 20px 0;
+    }
+
+    .history-timeline::before {
+        content: '';
+        position: absolute;
+        left: 30px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #e0e0e0;
+    }
+
+    .history-card {
+        position: relative;
+        margin-bottom: 30px;
+        padding-left: 60px;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        left: 26px;
+        top: 15px;
+        width: 10px;
+        height: 10px;
+        background: #3498db;
+        border-radius: 50%;
+        border: 2px solid white;
+        box-shadow: 0 0 0 3px #3498db;
+    }
+
+    .history-content {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .history-content:hover {
+        transform: translateY(-3px);
+    }
+
+    .pet-name {
+        color: #2c3e50;
+        margin: 0 0 15px 0;
+        font-size: 1.4em;
+    }
+
+    .history-details {
+        display: grid;
+        gap: 15px;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        color: #7f8c8d;
+    }
+
+    .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+        color: #3498db;
+    }
+
+    .empty-history {
+        text-align: center;
+        padding: 40px 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .empty-icon {
+        width: 60px;
+        height: 60px;
+        color: #95a5a6;
+        margin-bottom: 20px;
+    }
+
+    .empty-history p {
+        color: #7f8c8d;
+        font-size: 1.1em;
+        margin-bottom: 20px;
+    }
+
+    .browse-pets-btn {
+        display: inline-block;
+        padding: 12px 25px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+
+    .browse-pets-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    @media (max-width: 600px) {
+        .history-header h2 {
+            font-size: 1.8em;
+        }
+
+        .history-card {
+            padding-left: 50px;
+        }
+
+        .timeline-dot {
+            left: 21px;
+        }
+
+        .history-timeline::before {
+            left: 25px;
+        }
+    }
+</style>
+{% endblock %}

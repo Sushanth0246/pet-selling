@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="pets-container">
+    <div class="welcome-section">
+        <h2>Find Your Perfect Companion</h2>
+        <p class="subtitle">Discover loving pets waiting for their forever homes</p>
+        
+        <form action="{{ url_for('search') }}" method="get" class="search-form">
+            <div class="search-box">
+                <input type="text" name="q" placeholder="Search by name or breed...">
+                <button type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="pets-grid">
+        {% for pet in pets %}
+        <div class="pet-card">
+            <div class="pet-info">
+                <h3>{{ pet.Name or 'Unnamed' }}</h3>
+                <div class="pet-details">
+                    <span class="pet-breed">{{ pet.Breed or pet.Type }}</span>
+                    <span class="pet-age">Age: {{ pet.Age or 'N/A' }}</span>
+                </div>
+                <p class="pet-owner">Owner: {{ pet.OwnerName }}</p>
+                <div class="pet-actions">
+                    <a href="{{ url_for('pet_detail', pet_id=pet.PetID) }}" class="btn-details">View Details</a>
+                    {% if session.get('user_type') == 'user' %}
+                    <a href="{{ url_for('adopt', pet_id=pet.PetID) }}" class="btn-adopt">Adopt Now</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="no-pets">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 22H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5"></path>
+                <circle cx="11" cy="10" r="1"></circle>
+                <circle cx="17" cy="10" r="1"></circle>
+                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                <line x1="9" y1="18" x2="15" y2="18"></line>
+            </svg>
+            <p>No pets are currently available for adoption.</p>
+            <p>Please check back later!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .pets-container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .welcome-section {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        border-radius: 15px;
+        color: white;
+    }
+
+    .welcome-section h2 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .subtitle {
+        font-size: 1.2em;
+        opacity: 0.9;
+        margin-bottom: 30px;
+    }
+
+    .search-form {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .search-box {
+        display: flex;
+        background: white;
+        border-radius: 50px;
+        padding: 5px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-box input {
+        flex: 1;
+        padding: 15px 25px;
+        border: none;
+        border-radius: 50px;
+        font-size: 16px;
+        outline: none;
+    }
+
+    .search-box button {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        color: white;
+    }
+
+    .search-box button:hover {
+        transform: scale(1.1);
+    }
+
+    .pets-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        padding: 20px 0;
+    }
+
+    .pet-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        overflow: hidden;
+    }
+
+    .pet-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .pet-info {
+        padding: 20px;
+    }
+
+    .pet-info h3 {
+        color: #2c3e50;
+        margin: 0 0 10px 0;
+        font-size: 1.4em;
+    }
+
+    .pet-details {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        color: #7f8c8d;
+        font-size: 0.95em;
+    }
+
+    .pet-owner {
+        color: #34495e;
+        margin-bottom: 20px;
+        font-size: 0.95em;
+    }
+
+    .pet-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-details, .btn-adopt {
+        padding: 8px 15px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-align: center;
+        flex: 1;
+    }
+
+    .btn-details {
+        background-color: #f8f9fa;
+        color: #2c3e50;
+        border: 2px solid #e9ecef;
+    }
+
+    .btn-adopt {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+    }
+
+    .btn-details:hover {
+        background-color: #e9ecef;
+    }
+
+    .btn-adopt:hover {
+        background: linear-gradient(135deg, #2980b9, #2471a3);
+        transform: translateY(-2px);
+    }
+
+    .no-pets {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 50px 20px;
+        color: #7f8c8d;
+    }
+
+    .no-pets svg {
+        margin-bottom: 20px;
+        color: #95a5a6;
+    }
+
+    .no-pets p {
+        font-size: 1.1em;
+        margin: 5px 0;
+    }
+
+    @media (max-width: 768px) {
+        .welcome-section h2 {
+            font-size: 2em;
+        }
+
+        .pets-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .pet-card {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    }
+</style>
+{% endblock %}

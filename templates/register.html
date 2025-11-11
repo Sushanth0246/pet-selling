@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="register-container">
+    <div class="register-box">
+        <h2>Become a Pet Owner</h2>
+        <p class="register-subtitle">Join our community and help pets find their forever homes</p>
+        
+        <form method="post" class="register-form">
+            <div class="form-group">
+                <input name="name" placeholder="Full name" required>
+            </div>
+            
+            <div class="form-group">
+                <input name="email" placeholder="Email" type="email" required>
+            </div>
+            
+            <div class="form-group">
+                <input name="phone" placeholder="Contact number" required>
+            </div>
+            
+            <div class="form-group">
+                <input name="address" placeholder="Address">
+            </div>
+            
+            <div class="form-group">
+                <input name="password" placeholder="Password" type="password" required>
+            </div>
+            
+            <button type="submit" class="register-button">Create Account</button>
+            
+            <p class="login-link">Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+        </form>
+    </div>
+</div>
+
+<style>
+    .register-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 20px;
+    }
+
+    .register-box {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .register-box h2 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 28px;
+    }
+
+    .register-subtitle {
+        text-align: center;
+        color: #7f8c8d;
+        margin-bottom: 30px;
+        font-size: 16px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+    }
+
+    .form-group input:focus {
+        border-color: #3498db;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        background-color: white;
+    }
+
+    .form-group input::placeholder {
+        color: #95a5a6;
+    }
+
+    .register-button {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+    }
+
+    .register-button:hover {
+        background: linear-gradient(135deg, #2980b9, #2471a3);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(41, 128, 185, 0.3);
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 20px;
+        color: #7f8c8d;
+    }
+
+    .login-link a {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .login-link a:hover {
+        color: #2980b9;
+        text-decoration: underline;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+        .register-box {
+            padding: 20px;
+        }
+        
+        .register-box h2 {
+            font-size: 24px;
+        }
+        
+        .register-subtitle {
+            font-size: 14px;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="requests-container">
+    <div class="requests-header">
+        <h2>My Adoption Requests</h2>
+        <p class="subtitle">Track the status of your pet adoption applications</p>
+    </div>
+
+    <div class="requests-grid">
+        {% for r in requests %}
+        <div class="request-card">
+            <div class="request-header">
+                <h3>{{ r.PetName }}</h3>
+                <div class="status-badge {{ r.Status.lower() }}">{{ r.Status }}</div>
+            </div>
+            
+            <div class="request-details">
+                <div class="detail-item">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>Sent: {{ r.CreatedAt.strftime('%Y-%m-%d %H:%M') if r.CreatedAt else 'N/A' }}</span>
+                </div>
+            </div>
+
+            {% if r.Status == 'Approved' %}
+            <div class="request-actions">
+                <a href="{{ url_for('make_payment', req_id=r.ReqID) }}" class="payment-button">
+                    <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                    Make Payment
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="empty-requests">
+            <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <p>No adoption requests yet</p>
+            <a href="{{ url_for('index') }}" class="browse-pets-btn">Find Your Perfect Pet</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .requests-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .requests-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        border-radius: 15px;
+        color: white;
+    }
+
+    .requests-header h2 {
+        font-size: 2.2em;
+        margin: 0 0 10px 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .subtitle {
+        font-size: 1.1em;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .requests-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        padding: 20px 0;
+    }
+
+    .request-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .request-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .request-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .request-header h3 {
+        color: #2c3e50;
+        margin: 0;
+        font-size: 1.4em;
+    }
+
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+
+    .status-badge.pending {
+        background-color: #ffeaa7;
+        color: #d68910;
+    }
+
+    .status-badge.approved {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .status-badge.rejected {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .request-details {
+        margin-bottom: 20px;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        color: #7f8c8d;
+        margin-bottom: 10px;
+    }
+
+    .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+        color: #3498db;
+    }
+
+    .request-actions {
+        margin-top: 20px;
+    }
+
+    .payment-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .payment-button:hover {
+        background: linear-gradient(135deg, #2980b9, #2471a3);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(41, 128, 185, 0.3);
+    }
+
+    .button-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+    }
+
+    .empty-requests {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 50px 20px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .empty-icon {
+        width: 60px;
+        height: 60px;
+        color: #95a5a6;
+        margin-bottom: 20px;
+    }
+
+    .empty-requests p {
+        color: #7f8c8d;
+        font-size: 1.1em;
+        margin-bottom: 20px;
+    }
+
+    .browse-pets-btn {
+        display: inline-block;
+        padding: 12px 25px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+
+    .browse-pets-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .requests-header h2 {
+            font-size: 1.8em;
+        }
+
+        .requests-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .request-card {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    }
+</style>
+{% endblock %}

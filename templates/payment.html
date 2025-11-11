@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="payment-container">
+    <div class="payment-header">
+        <h2>Complete Your Payment</h2>
+        <p class="subtitle">Request ID: {{ req_id }}</p>
+    </div>
+
+    <div class="payment-card">
+        <form method="post" class="payment-form">
+            <div class="form-group">
+                <label for="payment-mode">Payment Method</label>
+                <div class="payment-mode-group">
+                    <select name="mode" id="payment-mode" class="select-styled">
+                        <option value="Cash">
+                            Cash Payment
+                        </option>
+                        <option value="Online">
+                            Online Transfer
+                        </option>
+                        <option value="Donate">
+                            Donation
+                        </option>
+                    </select>
+                    <div class="payment-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="payment-amount">Amount</label>
+                <div class="amount-input-group">
+                    <div class="currency-symbol">$</div>
+                    <input 
+                        type="number" 
+                        name="amount" 
+                        id="payment-amount"
+                        step="0.01" 
+                        min="0" 
+                        placeholder="Enter amount"
+                        required
+                    >
+                </div>
+            </div>
+
+            <button type="submit" class="submit-payment">
+                <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                Complete Payment
+            </button>
+        </form>
+
+        <div class="payment-info">
+            <div class="info-header">
+                <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                Payment Information
+            </div>
+            <ul class="info-list">
+                <li>Cash payments can be made in person</li>
+                <li>Online transfers will be processed immediately</li>
+                <li>Donations are used to help care for animals in need</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+    .payment-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .payment-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 30px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        border-radius: 15px;
+        color: white;
+    }
+
+    .payment-header h2 {
+        font-size: 2.2em;
+        margin: 0 0 10px 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .subtitle {
+        font-size: 1.1em;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .payment-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        color: #2c3e50;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .payment-mode-group {
+        position: relative;
+    }
+
+    .payment-mode-group .payment-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #3498db;
+        width: 24px;
+        height: 24px;
+        pointer-events: none;
+    }
+
+    .select-styled {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+        appearance: none;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .select-styled:focus {
+        border-color: #3498db;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        background-color: white;
+    }
+
+    .amount-input-group {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .currency-symbol {
+        position: absolute;
+        left: 15px;
+        color: #2c3e50;
+        font-weight: 600;
+    }
+
+    .amount-input-group input {
+        width: 100%;
+        padding: 12px 15px 12px 35px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+    }
+
+    .amount-input-group input:focus {
+        border-color: #3498db;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        background-color: white;
+    }
+
+    .submit-payment {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 25px;
+    }
+
+    .submit-payment:hover {
+        background: linear-gradient(135deg, #2980b9, #2471a3);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(41, 128, 185, 0.3);
+    }
+
+    .button-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+    }
+
+    .payment-info {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .info-header {
+        display: flex;
+        align-items: center;
+        color: #2c3e50;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .info-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+        color: #3498db;
+    }
+
+    .info-list {
+        margin: 0;
+        padding-left: 20px;
+        color: #505c6d;
+    }
+
+    .info-list li {
+        margin-bottom: 8px;
+    }
+
+    .info-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    @media (max-width: 768px) {
+        .payment-header h2 {
+            font-size: 1.8em;
+        }
+
+        .payment-card {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}

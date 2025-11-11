@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="add-pet-container">
+    <div class="form-header">
+        <h2>{% if pet %}Edit Pet{% else %}Add New Pet{% endif %}</h2>
+        <p class="subtitle">{% if pet %}Update your pet's information{% else %}Share a new pet with potential adopters{% endif %}</p>
+    </div>
+
+    <div class="form-card">
+        <form method="post" class="pet-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Pet Name</label>
+                    <input name="name" placeholder="Enter pet's name" value="{{ pet.Name if pet else '' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Breed</label>
+                    <input name="breed" placeholder="e.g., Golden Retriever" value="{{ pet.Breed if pet else '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Type</label>
+                    <input name="type" placeholder="e.g., Dog, Cat, etc." value="{{ pet.Type if pet else '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Age</label>
+                    <input name="age" placeholder="Pet's age" value="{{ pet.Age if pet else '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select name="gender" class="select-styled">
+                        <option value="Male" {% if pet and pet.Gender=='Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if pet and pet.Gender=='Female' %}selected{% endif %}>Female</option>
+                        <option value="Unknown" {% if pet and pet.Gender=='Unknown' %}selected{% endif %}>Unknown</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Color</label>
+                    <input name="color" placeholder="Pet's color" value="{{ pet.Color if pet else '' }}">
+                </div>
+
+                <div class="form-group">
+                    <label>Size</label>
+                    <input name="size" placeholder="e.g., Small, Medium, Large" value="{{ pet.Size if pet else '' }}">
+                </div>
+
+               
+            </div>
+
+            <div class="form-group full-width">
+                <label>Description</label>
+                <textarea name="description" placeholder="Tell us about your pet's personality, habits, and special needs...">{{ pet.Description if pet else '' }}</textarea>
+            </div>
+
+            <div class="checkbox-group">
+                <label class="checkbox-container">
+                    <input type="checkbox" name="forsale" {% if pet and pet.ForSale %}checked{% endif %}>
+                    <span class="checkmark"></span>
+                    Available for Sale
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" name="forgroom" {% if pet and pet.ForGrooming %}checked{% endif %}>
+                    <span class="checkmark"></span>
+                    Available for Grooming
+                </label>
+            </div>
+
+            <button type="submit" class="submit-button">
+                {% if pet %}Update Pet{% else %}Add Pet{% endif %}
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .add-pet-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 30px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        border-radius: 15px;
+        color: white;
+    }
+
+    .form-header h2 {
+        font-size: 2.2em;
+        margin: 0 0 10px 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .subtitle {
+        font-size: 1.1em;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .form-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #3498db;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        background-color: white;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .checkbox-group {
+        margin: 25px 0;
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        color: #2c3e50;
+        user-select: none;
+    }
+
+    .checkbox-container input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .checkmark {
+        width: 22px;
+        height: 22px;
+        border: 2px solid #3498db;
+        border-radius: 5px;
+        margin-right: 10px;
+        position: relative;
+        transition: all 0.2s ease;
+    }
+
+    .checkbox-container input:checked ~ .checkmark {
+        background-color: #3498db;
+    }
+
+    .checkmark:after {
+        content: '';
+        position: absolute;
+        display: none;
+        left: 7px;
+        top: 3px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+
+    .checkbox-container input:checked ~ .checkmark:after {
+        display: block;
+    }
+
+    .submit-button {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+    }
+
+    .submit-button:hover {
+        background: linear-gradient(135deg, #2980b9, #2471a3);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(41, 128, 185, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .form-header h2 {
+            font-size: 1.8em;
+        }
+
+        .checkbox-group {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-card {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}

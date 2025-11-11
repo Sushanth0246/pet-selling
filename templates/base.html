@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Pet Adoption</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+    }
+
+    header {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      padding: 10px 0;
+      text-align: center;
+    }
+
+    header h1 a {
+      color: white;
+      text-decoration: none;
+      font-size: 2.2rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    header h1 a:hover {
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
+      display: inline-block;
+    }
+
+    nav {
+      text-align: center;
+      padding: 15px 0;
+      font-size: 1.1rem;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      margin: 0 5px;
+    }
+
+    nav a:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .user-greeting {
+      color: white;
+      font-weight: 500;
+      margin-right: 10px;
+    }
+
+    .nav-separator {
+      color: rgba(255, 255, 255, 0.6);
+      margin: 0 5px;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 20px;
+    }
+
+    .flashes {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+
+    .flash {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      text-align: center;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .flash.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .flash.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+      background-color: #f8f9fa;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+    }
+
+    footer hr {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><a href="{{ url_for('index') }}">Pet Adoption System</a></h1>
+    <nav>
+      {% if session.get('user_name') %}
+        <span class="user-greeting">Hello, {{ session.get('user_name') }}</span>
+        <span class="nav-separator">|</span>
+        {% if session.get('user_type') == 'owner' %}
+          <a href="{{ url_for('owner_dashboard') }}">Owner Dashboard</a>
+          <span class="nav-separator">|</span>
+          <a href="{{ url_for('owner_requests') }}">Requests</a>
+          <span class="nav-separator">|</span>
+        {% else %}
+          <a href="{{ url_for('my_requests') }}">My Requests</a>
+          <span class="nav-separator">|</span>
+          <a href="{{ url_for('my_history') }}">My History</a>
+          <span class="nav-separator">|</span>
+        {% endif %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <span class="nav-separator">|</span>
+        <a href="{{ url_for('register') }}">User Register</a>
+        <span class="nav-separator">|</span>
+        <a href="{{ url_for('owner_register') }}">Owner Register</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) -%}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, msg in messages %}
+            <li class="flash {{ category }}">{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer><hr>© Pet Adoption</footer>
+</body>
+</html>

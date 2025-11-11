@@ -1,0 +1,310 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="pet-detail-container">
+    <div class="pet-header">
+        <div class="header-content">
+            <h2>{{ pet.Name or 'Pet Details' }}</h2>
+            <p class="subtitle">{{ pet.Type }} • {{ pet.Breed }}</p>
+        </div>
+        <a href="{{ url_for('index') }}" class="back-button">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Back to Pets
+        </a>
+    </div>
+
+    <div class="pet-content">
+        <div class="pet-card">
+            <div class="pet-image">
+                {% if pet.ImageURL %}
+                <img src="{{ pet.ImageURL }}" alt="{{ pet.Name }}">
+                {% else %}
+                <div class="placeholder-image">
+                    <svg class="pet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5"></path>
+                        <path d="M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5"></path>
+                        <path d="M8 14v.5"></path>
+                        <path d="M16 14v.5"></path>
+                        <path d="M11.25 16.25h1.5L12 17l-.75-.75z"></path>
+                        <path d="M4.42 11.247A13.152 13.152 0 0 0 4 14.556C4 18.728 7.582 21 12 21s8-2.272 8-6.444c0-1.061-.162-2.2-.493-3.309m-9.243-6.082A8.801 8.801 0 0 1 12 5c.78 0 1.5.108 2.161.306"></path>
+                    </svg>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="pet-info">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Age</span>
+                        <span class="info-value">{{ pet.Age or 'Not specified' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Gender</span>
+                        <span class="info-value">{{ pet.Gender or 'Not specified' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Color</span>
+                        <span class="info-value">{{ pet.Color or 'Not specified' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Size</span>
+                        <span class="info-value">{{ pet.Size or 'Not specified' }}</span>
+                    </div>
+                </div>
+
+                <div class="description-section">
+                    <h3>About {{ pet.Name }}</h3>
+                    <p>{{ pet.Description or 'No description available.' }}</p>
+                </div>
+
+                <div class="owner-section">
+                    <div class="owner-info">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span>Owner: {{ pet.OwnerName }}</span>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    {% if session.get('user_type') == 'user' %}
+                    <a href="{{ url_for('adopt', pet_id=pet.PetID) }}" class="adopt-button">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg>
+                        Send Adoption Request
+                    </a>
+                    {% endif %}
+                    {% if session.get('user_type') == 'owner' and session.get('owner_id') == pet.OwnerID %}
+                    <a href="{{ url_for('owner_edit_pet', pet_id=pet.PetID) }}" class="edit-button">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit Pet Details
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .pet-detail-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .pet-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding: 30px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        border-radius: 15px;
+        color: white;
+    }
+
+    .header-content h2 {
+        font-size: 2.2em;
+        margin: 0 0 10px 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .subtitle {
+        font-size: 1.1em;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .back-button {
+        display: flex;
+        align-items: center;
+        padding: 10px 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateX(-5px);
+    }
+
+    .back-button .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+    }
+
+    .pet-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .pet-image {
+        width: 100%;
+        height: 300px;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .pet-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .placeholder-image {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    }
+
+    .pet-icon {
+        width: 100px;
+        height: 100px;
+        color: #3498db;
+    }
+
+    .pet-info {
+        padding: 30px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .info-label {
+        color: #7f8c8d;
+        font-size: 0.9em;
+        margin-bottom: 5px;
+    }
+
+    .info-value {
+        color: #2c3e50;
+        font-size: 1.1em;
+        font-weight: 600;
+    }
+
+    .description-section {
+        margin-bottom: 30px;
+    }
+
+    .description-section h3 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+    }
+
+    .description-section p {
+        color: #505c6d;
+        line-height: 1.6;
+    }
+
+    .owner-section {
+        margin-bottom: 30px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+
+    .owner-info {
+        display: flex;
+        align-items: center;
+        color: #2c3e50;
+    }
+
+    .owner-info .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+        color: #3498db;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+    }
+
+    .adopt-button, .edit-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .adopt-button {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        flex: 2;
+    }
+
+    .edit-button {
+        background: #f8f9fa;
+        color: #2c3e50;
+        border: 2px solid #e0e0e0;
+        flex: 1;
+    }
+
+    .adopt-button:hover {
+        background: linear-gradient(135deg, #2980b9, #2471a3);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(41, 128, 185, 0.3);
+    }
+
+    .edit-button:hover {
+        background: #e9ecef;
+        transform: translateY(-2px);
+    }
+
+    .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+    }
+
+    @media (max-width: 768px) {
+        .pet-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 20px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .adopt-button, .edit-button {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
