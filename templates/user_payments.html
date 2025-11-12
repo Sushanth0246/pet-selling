@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Payments - PetSelling{% endblock %}
+
+{% block content %}
+<section class="dashboard-section">
+    <div class="section-header">
+        <div>
+            <h2>Pending Payments</h2>
+            <p>Owner-approved requests awaiting your mock payment</p>
+        </div>
+    </div>
+
+    {% if payments %}
+        <div class="requests-list">
+            {% for p in payments %}
+                <div class="request-item">
+                    <div class="request-image">
+                        {% if p.ImageURL %}
+                            <img src="{{ p.ImageURL }}" alt="{{ p.PetName }}" onerror="this.src='/static/images/no-image.png'">
+                        {% else %}
+                            <div class="request-image-placeholder">
+                                <svg viewBox="0 0 4 4" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="8" r="4"></circle>
+                                    <path d="M12 14c-4 0-6 3-6 3v5h12v-5s-2-3-6-3z"></path>
+                                </svg>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="request-info">
+                        <h3 class="request-name">{{ p.PetName }}</h3>
+                        <div class="request-details">
+                            <div class="detail-col">
+                                <span class="detail-label">Owner:</span>
+                                <span class="detail-value">{{ p.OwnerName }}</span>
+                            </div>
+                            <div class="detail-col">
+                                <span class="detail-label">Fee:</span>
+                                <span class="detail-value amount">${{ "%.2f"|format(p.Price or 0) }}</span>
+                            </div>
+                            <div class="detail-col">
+                                <span class="detail-label">Requested on:</span>
+                                <span class="detail-value">{{ p.CreatedAt.strftime('%b %d, %Y') if p.CreatedAt else '—' }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="request-actions">
+                        <a href="{{ url_for('user_payment', req_id=p.ReqID) }}" class="btn btn-primary">Pay</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h3>No payments pending</h3>
+            <p>You have no owner-approved requests awaiting payment.</p>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

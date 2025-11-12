@@ -1,52 +1,103 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="pets-container">
-    <div class="welcome-section">
-        <h2>Find Your Perfect Companion</h2>
-        <p class="subtitle">Discover loving pets waiting for their forever homes</p>
-        
-        <form action="{{ url_for('search') }}" method="get" class="search-form">
-            <div class="search-box">
-                <input type="text" name="q" placeholder="Search by name or breed...">
-                <button type="submit">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                </button>
-            </div>
-        </form>
+    <div class="page-header">
+        <h1>Available Pets for Adoption</h1>
+        <p class="subtitle">Find your perfect companion</p>
     </div>
+
+    {% if search_query %}
+    <div class="search-results-info">
+        <p>Search results for: <strong>"{{ search_query }}"</strong></p>
+    </div>
+    {% endif %}
 
     <div class="pets-grid">
         {% for pet in pets %}
         <div class="pet-card">
-            <div class="pet-info">
-                <h3>{{ pet.Name or 'Unnamed' }}</h3>
-                <div class="pet-details">
-                    <span class="pet-breed">{{ pet.Breed or pet.Type }}</span>
-                    <span class="pet-age">Age: {{ pet.Age or 'N/A' }}</span>
+            <div class="pet-image-wrapper">
+                {% if pet.ImageURL %}
+                    <img src="{{ pet.ImageURL }}" alt="{{ pet.Name or 'Pet' }}" class="pet-image" onerror="this.src='/static/images/no-image.png'">
+                {% else %}
+                    <div class="pet-image-placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="8" r="4"></circle>
+                            <path d="M12 14c-4 0-6 3-6 3v5h12v-5s-2-3-6-3z"></path>
+                        </svg>
+                        <p>No Image Available</p>
+                    </div>
+                {% endif %}
+                <div class="pet-badge">{{ pet.Type or 'Pet' }}</div>
+            </div>
+            
+            <div class="pet-details">
+                <h3 class="pet-name">{{ pet.Name or 'Unnamed Pet' }}</h3>
+                
+                <div class="pet-info-section">
+                    <div class="info-item">
+                        <span class="label">Breed:</span>
+                        <span class="value">{{ pet.Breed or 'N/A' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Age:</span>
+                        <span class="value">{{ pet.Age or 'N/A' }} years</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Gender:</span>
+                        <span class="value">{{ pet.Gender or 'N/A' }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Price:</span>
+                        <span class="value price">${{ "%.2f"|format(pet.Price or 0) }}</span>
+                    </div>
                 </div>
-                <p class="pet-owner">Owner: {{ pet.OwnerName }}</p>
+
+                {% if pet.Description %}
+                <p class="pet-description">{{ pet.Description[:100] }}{% if pet.Description|length > 100 %}...{% endif %}</p>
+                {% endif %}
+
+                <div class="pet-owner">
+                    <span class="owner-label">Owner:</span>
+                    <span class="owner-name">{{ pet.OwnerName or 'Unknown' }}</span>
+                </div>
+
                 <div class="pet-actions">
-                    <a href="{{ url_for('pet_detail', pet_id=pet.PetID) }}" class="btn-details">View Details</a>
+                    <a href="{{ url_for('pet_detail', pet_id=pet.PetID) }}" class="btn btn-view">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        View Details
+                    </a>
                     {% if session.get('user_type') == 'user' %}
-                    <a href="{{ url_for('adopt', pet_id=pet.PetID) }}" class="btn-adopt">Adopt Now</a>
+                    <a href="{{ url_for('adopt', pet_id=pet.PetID) }}" class="btn btn-adopt">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        Adopt Now
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-login">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                            <polyline points="10 17 15 12 10 7"></polyline>
+                            <line x1="15" y1="12" x2="3" y2="12"></line>
+                        </svg>
+                        Login to Adopt
+                    </a>
                     {% endif %}
                 </div>
             </div>
         </div>
         {% else %}
         <div class="no-pets">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M10 22H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5"></path>
-                <circle cx="11" cy="10" r="1"></circle>
-                <circle cx="17" cy="10" r="1"></circle>
-                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
-                <line x1="9" y1="18" x2="15" y2="18"></line>
+            <svg class="no-pets-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
             </svg>
-            <p>No pets are currently available for adoption.</p>
-            <p>Please check back later!</p>
+            <h2>No Pets Available</h2>
+            <p>{% if search_query %}No pets found matching your search.{% else %}Check back soon for available pets!{% endif %}</p>
         </div>
         {% endfor %}
     </div>
@@ -54,113 +105,195 @@
 
 <style>
     .pets-container {
-        padding: 20px;
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
+        padding: 20px;
     }
 
-    .welcome-section {
+    .page-header {
         text-align: center;
         margin-bottom: 40px;
         padding: 40px 20px;
-        background: linear-gradient(135deg, #3498db, #2980b9);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border-radius: 15px;
         color: white;
     }
 
-    .welcome-section h2 {
+    .page-header h1 {
+        margin: 0;
         font-size: 2.5em;
-        margin-bottom: 10px;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .subtitle {
+        margin: 10px 0 0 0;
         font-size: 1.2em;
-        opacity: 0.9;
+        opacity: 0.95;
+    }
+
+    .search-results-info {
+        background-color: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        border-radius: 5px;
         margin-bottom: 30px;
+        color: #1565c0;
     }
 
-    .search-form {
-        max-width: 600px;
-        margin: 0 auto;
-    }
-
-    .search-box {
-        display: flex;
-        background: white;
-        border-radius: 50px;
-        padding: 5px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .search-box input {
-        flex: 1;
-        padding: 15px 25px;
-        border: none;
-        border-radius: 50px;
-        font-size: 16px;
-        outline: none;
-    }
-
-    .search-box button {
-        background: linear-gradient(135deg, #3498db, #2980b9);
-        border: none;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: transform 0.3s ease;
-        color: white;
-    }
-
-    .search-box button:hover {
-        transform: scale(1.1);
+    .search-results-info p {
+        margin: 0;
+        font-size: 1em;
     }
 
     .pets-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: 25px;
-        padding: 20px 0;
+        margin-bottom: 40px;
     }
 
     .pet-card {
         background: white;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease;
+        border-radius: 12px;
         overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
     }
 
     .pet-card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-8px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
     }
 
-    .pet-info {
-        padding: 20px;
+    .pet-image-wrapper {
+        position: relative;
+        width: 100%;
+        height: 250px;
+        background-color: #f0f0f0;
+        overflow: hidden;
     }
 
-    .pet-info h3 {
-        color: #2c3e50;
-        margin: 0 0 10px 0;
-        font-size: 1.4em;
+    .pet-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .pet-card:hover .pet-image {
+        transform: scale(1.08);
+    }
+
+    .pet-image-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        color: #7f8c8d;
+    }
+
+    .pet-image-placeholder svg {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 10px;
+        opacity: 0.6;
+    }
+
+    .pet-image-placeholder p {
+        margin: 0;
+        font-size: 0.95em;
+        text-align: center;
+    }
+
+    .pet-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background-color: rgba(102, 126, 234, 0.9);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: 600;
+        text-transform: uppercase;
     }
 
     .pet-details {
+        padding: 20px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .pet-name {
+        margin: 0 0 15px 0;
+        font-size: 1.5em;
+        color: #2c3e50;
+    }
+
+    .pet-info-section {
+        background-color: #f8f9fa;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        flex-grow: 1;
+    }
+
+    .info-item {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 15px;
+        margin-bottom: 8px;
+        font-size: 0.9em;
+    }
+
+    .info-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .label {
         color: #7f8c8d;
-        font-size: 0.95em;
+        font-weight: 600;
+    }
+
+    .value {
+        color: #2c3e50;
+        font-weight: 500;
+    }
+
+    .price {
+        color: #27ae60;
+        font-weight: 700;
+        font-size: 1.1em;
+    }
+
+    .pet-description {
+        color: #555;
+        font-size: 0.9em;
+        margin: 0 0 10px 0;
+        line-height: 1.4;
     }
 
     .pet-owner {
-        color: #34495e;
-        margin-bottom: 20px;
-        font-size: 0.95em;
+        border-top: 1px solid #ecf0f1;
+        padding-top: 10px;
+        margin-bottom: 15px;
+        font-size: 0.85em;
+    }
+
+    .owner-label {
+        color: #7f8c8d;
+        font-weight: 600;
+        margin-right: 8px;
+    }
+
+    .owner-name {
+        color: #2c3e50;
+        font-weight: 500;
     }
 
     .pet-actions {
@@ -168,65 +301,125 @@
         gap: 10px;
     }
 
-    .btn-details, .btn-adopt {
-        padding: 8px 15px;
-        border-radius: 20px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        text-align: center;
+    .btn {
         flex: 1;
+        padding: 10px 12px;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.85em;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: all 0.3s ease;
     }
 
-    .btn-details {
-        background-color: #f8f9fa;
-        color: #2c3e50;
-        border: 2px solid #e9ecef;
+    .btn-icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    .btn-view {
+        background-color: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .btn-view:hover {
+        background-color: #bbdefb;
+        transform: translateY(-2px);
     }
 
     .btn-adopt {
-        background: linear-gradient(135deg, #3498db, #2980b9);
-        color: white;
-    }
-
-    .btn-details:hover {
-        background-color: #e9ecef;
+        background-color: #e8f5e9;
+        color: #388e3c;
     }
 
     .btn-adopt:hover {
-        background: linear-gradient(135deg, #2980b9, #2471a3);
+        background-color: #c8e6c9;
+        transform: translateY(-2px);
+    }
+
+    .btn-login {
+        background-color: #fce4ec;
+        color: #c2185b;
+    }
+
+    .btn-login:hover {
+        background-color: #f8bbd0;
         transform: translateY(-2px);
     }
 
     .no-pets {
         grid-column: 1 / -1;
         text-align: center;
-        padding: 50px 20px;
-        color: #7f8c8d;
+        padding: 80px 20px;
     }
 
-    .no-pets svg {
+    .no-pets-icon {
+        width: 100px;
+        height: 100px;
+        color: #bdc3c7;
         margin-bottom: 20px;
-        color: #95a5a6;
+    }
+
+    .no-pets h2 {
+        color: #2c3e50;
+        margin: 0 0 10px 0;
+        font-size: 1.8em;
     }
 
     .no-pets p {
-        font-size: 1.1em;
-        margin: 5px 0;
+        color: #7f8c8d;
+        margin: 0;
+        font-size: 1.05em;
     }
 
     @media (max-width: 768px) {
-        .welcome-section h2 {
-            font-size: 2em;
+        .page-header {
+            padding: 30px 15px;
+        }
+
+        .page-header h1 {
+            font-size: 1.8em;
         }
 
         .pets-grid {
             grid-template-columns: 1fr;
+            gap: 15px;
         }
 
-        .pet-card {
-            max-width: 400px;
-            margin: 0 auto;
+        .pet-image-wrapper {
+            height: 200px;
+        }
+
+        .pet-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            padding: 12px 15px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .pets-container {
+            padding: 10px;
+        }
+
+        .page-header {
+            padding: 20px 10px;
+            margin-bottom: 20px;
+        }
+
+        .page-header h1 {
+            font-size: 1.5em;
+        }
+
+        .subtitle {
+            font-size: 1em;
         }
     }
 </style>

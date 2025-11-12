@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Complete Payment - PetSelling{% endblock %}
+
+{% block content %}
+<div class="dashboard-section">
+  <div class="section-header">
+    <div>
+      <h2>Complete Payment</h2>
+      <p>Mock payment for <strong>{{ req.PetName }}</strong></p>
+    </div>
+  </div>
+
+  <div class="pets-grid" style="grid-template-columns: 1fr;">
+    <div class="pet-card">
+      <div class="pet-image-wrapper" style="height:220px;">
+        {% if req.ImageURL %}
+          <img src="{{ req.ImageURL }}" alt="{{ req.PetName }}" class="pet-image" onerror="this.src='/static/images/no-image.png'">
+        {% else %}
+          <div class="pet-image-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="48" height="48">
+              <circle cx="12" cy="8" r="4"></circle>
+              <path d="M12 14c-4 0-6 3-6 3v5h12v-5s-2-3-6-3z"></path>
+            </svg>
+          </div>
+        {% endif %}
+        <div class="pet-type-badge">Payment</div>
+      </div>
+
+      <div class="pet-body">
+        <h3 class="pet-name">{{ req.PetName }}</h3>
+        <div class="pet-meta">
+          <div><strong>Fee:</strong> ${{ "%.2f"|format(req.Price or 0) }}</div>
+          <div><strong>Request ID:</strong> {{ req.ReqID }}</div>
+          <div><strong>Status:</strong> {{ req.Status }}</div>
+        </div>
+
+        <form method="POST" onsubmit="return confirm('Simulate payment?')">
+          <button type="submit" class="btn btn-primary">Confirm Mock Payment</button>
+          <a href="{{ url_for('user_payments') }}" class="btn btn-outline" style="margin-left:8px;">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
